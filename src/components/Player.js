@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react';
+import {Consumer} from './Context'
 import PropTypes from 'prop-types';
 import Counter from './Counter';
 import Crown from './Crown';
@@ -6,11 +7,6 @@ import Crown from './Crown';
 class Player extends PureComponent {
   
   static propTypes = {
-    changeScore: PropTypes.func,
-    removePlayer: PropTypes.func,
-    name: PropTypes.string,
-    score: PropTypes.number,
-    id: PropTypes.number,
     index: PropTypes.number,
     isHighScore: PropTypes.bool
   };
@@ -18,28 +14,24 @@ class Player extends PureComponent {
   render (){  
 
     const {
-      name,
-      id,
-      score,
       index,
-      removePlayer,
-      changeScore
+      isHighScore
     } = this.props;
    
     return (
       <div className="player">
-        <span className="player-name">
-          <button className="remove-player" onClick={() => removePlayer(id)}>✖</button>
-          
-          <Crown isHighScore={this.props.isHighScore} />
-          { name }
+        <Consumer>
+        {({actions, players}) => (
+          <span className="player-name">
+          <button className="remove-player" onClick={() => actions.removePlayer(players[index].id)}>✖</button>
+          <Crown isHighScore={isHighScore} />
+          { players[index].name }
         </span>
+        )}
+      </Consumer>
+        
 
-        <Counter 
-          score={score}
-          index={index}
-          changeScore={changeScore}
-        />
+        <Counter index={index} />
       </div>
     );
   }
